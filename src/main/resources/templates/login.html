@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <linl rel="stylesheet" th:href="@{/css/style.css}"></linl>
+</head>
+<body>
+    <form method="post" th:action="@{/login}">
+        <input type="text" name="username" placeholder="Usuário">
+        <input type="password" name="password" placeholder="Senha">
+        <input type="submit" value="Entrar">
+    </form>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
