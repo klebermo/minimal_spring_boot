@@ -130,7 +130,7 @@ public class App extends SpringBootServletInitializer {
 		try {
 			usuario.setPassword(passwordEncoder().encode(usuario.getPassword()));
 			usuario.setCredenciais(new ArrayList<Credencial>());
-			usuario.getCredenciais().add(credencialDao.findBy("nome", "user").get(0));
+			usuario.getCredenciais().add(credencialDao.findBy("nome", "USER").get(0));
 			usuarioDao.insert(usuario);
 			return "login";
 		} catch (Exception e) {
