@@ -46,21 +46,23 @@ public class Dao<T> {
 		entityManager.close();
     }
 
+    @SuppressWarnings("unchecked")
     public List<T> select() {
         System.out.println("Selecting");
         EntityManager entityManager = getEntityManager();
 		entityManager.getTransaction().begin();
-		List<T> lista = entityManager.createQuery("SELECT a FROM "+classe.getSimpleName()+" a").getResultList();
+		List<T> lista = (List<T>) entityManager.createQuery("SELECT a FROM "+classe.getSimpleName()+" a").getResultList();
 		entityManager.getTransaction().commit();
 		entityManager.close();
 		return lista;
     }
 
+    @SuppressWarnings("unchecked")
     public T findById(Integer id) {
         System.out.println("Finding by id");
         EntityManager entityManager = getEntityManager();
 		entityManager.getTransaction().begin();
-		List<T> lista = entityManager.createQuery("SELECT a FROM "+classe.getSimpleName()+" a WHERE a.id = :id").setParameter("id", id).getResultList();
+		List<T> lista = (List<T>) entityManager.createQuery("SELECT a FROM "+classe.getSimpleName()+" a WHERE a.id = :id").setParameter("id", id).getResultList();
 		entityManager.getTransaction().commit();
 		entityManager.close();
         if(lista.isEmpty()) {
@@ -70,11 +72,12 @@ public class Dao<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<T> findBy(String key, Object value) {
         System.out.println("Finding by " + key);
         EntityManager entityManager = getEntityManager();
 		entityManager.getTransaction().begin();
-		List<T> lista = entityManager.createQuery("SELECT a FROM "+classe.getSimpleName()+" a WHERE a."+key+" = :value").setParameter("value", value).getResultList();
+		List<T> lista = (List<T>) entityManager.createQuery("SELECT a FROM "+classe.getSimpleName()+" a WHERE a."+key+" = :value").setParameter("value", value).getResultList();
 		entityManager.getTransaction().commit();
 		entityManager.close();
         return lista;
