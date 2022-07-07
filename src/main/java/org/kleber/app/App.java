@@ -1,35 +1,37 @@
 package org.kleber.app;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.stereotype.Controller;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.kleber.app.model.credencial.CredencialDao;
-import org.kleber.app.model.usuario.UsuarioDao;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+
 import org.springframework.context.annotation.Bean;
+import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
+
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import java.security.MessageDigest;
-import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
+
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.kleber.app.model.usuario.Usuario;
-import org.kleber.app.model.credencial.Credencial;
+import org.springframework.ui.Model;
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.kleber.app.model.usuario.UsuarioDao;
+import org.kleber.app.model.credencial.CredencialDao;
+import org.kleber.app.model.usuario.Usuario;
+import org.kleber.app.model.credencial.Credencial;
+
 @SpringBootApplication
-@EnableWebSecurity
 @Controller
-public class AppApplication extends SpringBootServletInitializer {
+public class App extends SpringBootServletInitializer {
 	@Autowired
 	UsuarioDao usuarioDao;
 
@@ -37,12 +39,38 @@ public class AppApplication extends SpringBootServletInitializer {
 	CredencialDao credencialDao;
 
 	public static void main(String[] args) {
-		SpringApplication.run(AppApplication.class, args);
+		SpringApplication.run(App.class, args);
 	}
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(AppApplication.class);
+		return application.sources(App.class);
+	}
+
+	@Bean
+	public SpringSecurityDialect springSecurityDialect() {
+		return new SpringSecurityDialect();
+	}
+
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http
+			.csrf().disable()
+			.cors().disable()
+			.authorizeRequests()
+				.antMatchers("/", "/login", "/logout", "/register", "/error", "/css/**", "/js/**", "/img/**").permitAll()
+				.anyRequest().authenticated()
+			.and()
+			.authenticationProvider(authProvider());
+		return http.build();
+	}
+
+	@Bean
+	public DaoAuthenticationProvider authProvider() {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setPasswordEncoder(passwordEncoder());
+		provider.setUserDetailsService(userDetailsService());
+		return provider;
 	}
 
 	@Bean
@@ -79,32 +107,6 @@ public class AppApplication extends SpringBootServletInitializer {
 				return encodedPassword.equals(encode(rawPassword));
 			}
 		};
-	}
-
-	@Bean
-	public DaoAuthenticationProvider authProvider() {
-		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-		provider.setPasswordEncoder(passwordEncoder());
-		provider.setUserDetailsService(userDetailsService());
-		return provider;
-	}
-
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http
-			.csrf().disable()
-			.cors().disable()
-			.authorizeRequests()
-				.antMatchers("/", "/login", "/logout", "/register", "/error", "/css/**", "/js/**", "/img/**").permitAll()
-				.anyRequest().authenticated()
-			.and()
-			.authenticationProvider(authProvider());
-		return http.build();
-	}
-
-	@Bean
-	public SpringSecurityDialect springSecurityDialect() {
-		return new SpringSecurityDialect();
 	}
 
     @RequestMapping(value = "/")
