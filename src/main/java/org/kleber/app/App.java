@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect;
 
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,21 +57,20 @@ public class App extends SpringBootServletInitializer {
 		http
 			.csrf().disable()
 			.cors().disable()
-			.authorizeRequests()
+			.authorizeHttpRequests()
 				.antMatchers("/", "/login", "/logout", "/register", "/error", "/css/**", "/js/**", "/img/**").permitAll()
 				.anyRequest().authenticated()
-			.and()
-			.authenticationProvider(authProvider());
+				.and().authenticationProvider(authProvider());
 		return http.build();
 	}
 
-	@Bean
-	public DaoAuthenticationProvider authProvider() {
-		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-		provider.setPasswordEncoder(passwordEncoder());
-		provider.setUserDetailsService(userDetailsService());
-		return provider;
-	}
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(userDetailsService());
+        return provider;
+    }
 
 	@Bean
 	public UserDetailsService userDetailsService() {
