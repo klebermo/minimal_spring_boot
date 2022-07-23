@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+
 import org.kleber.app.model.credencial.Credencial;
 import org.kleber.app.model.Model;
 import org.kleber.app.model.autorizacao.Autorizacao;
@@ -36,7 +38,7 @@ public class Usuario extends Model implements UserDetails {
     @Column
     String email;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     List<Credencial> credenciais;
 
     public Integer getId() {

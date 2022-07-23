@@ -60,7 +60,14 @@ public class App extends SpringBootServletInitializer {
 			.authorizeHttpRequests()
 				.antMatchers("/", "/login", "/logout", "/register", "/error", "/css/**", "/js/**", "/img/**").permitAll()
 				.anyRequest().authenticated()
-				.and().authenticationProvider(authProvider());
+			.and()
+			.formLogin()
+				.loginPage("/login")
+				.loginProcessingUrl("/doLogin")
+				.defaultSuccessUrl("/")
+				.failureUrl("/login?error=true")
+			.and()
+			.authenticationProvider(authProvider());
 		return http.build();
 	}
 
@@ -78,7 +85,7 @@ public class App extends SpringBootServletInitializer {
 			@Override
 			public UserDetails loadUserByUsername(String username) {
 				System.out.println("loadUserByUsername: " + username);
-				return usuarioDao.findBy("username", username).get(0);
+				return usuarioDao.findByUsername(username);
 			}
 		};
 	}

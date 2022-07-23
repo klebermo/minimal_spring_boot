@@ -7,7 +7,9 @@
     <linl rel="stylesheet" th:href="@{/css/style.css}"></linl>
 </head>
 <body>
-    <form method="post" th:action="@{/login}">
+    <span th:if="${error}">Login error</span>
+    
+    <form method="post" th:action="@{/doLogin}">
         <input type="text" name="username" placeholder="Usuário">
         <input type="password" name="password" placeholder="Senha">
         <input type="submit" value="Entrar">

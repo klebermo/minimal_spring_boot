@@ -1,7 +1,6 @@
 package org.kleber.app.model;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class Service<T> {
